@@ -4,36 +4,33 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/your-repo/discountmate-api.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                bat 'npm test'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t discountmate-api .'
+                bat 'docker build -t discountmate-api .'
             }
         }
 
         stage('Run Container') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
+    steps {
+        bat '''
+        set COMPOSE_PROJECT_NAME=discountmate_hd
+        docker-compose down -v --remove-orphans
+        docker-compose up -d --build
+        '''
+    }
+}
 
     }
-
 }
